@@ -1,0 +1,5 @@
+id_venda,produto,quantidade,preco_unitario,data_venda
+1,Camiseta,3,49.90,06/09/2026
+2,Calça,2,99.90,07/09/2026
+3,Camiseta,1,49.90,06/09/2026
+4,Tênis,1,699.90,10/09/2026

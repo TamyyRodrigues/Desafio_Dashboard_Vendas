@@ -1,0 +1,45 @@
+{
+  "name": "vendas-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=16.10.0 <17.0.0" },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadlessCI"
+  },
+  "dependencies": {
+    "@angular/animations": "13.3.11",
+    "@angular/cdk": "13.3.9",
+    "@angular/common": "13.3.11",
+    "@angular/compiler": "13.3.11",
+    "@angular/core": "13.3.11",
+    "@angular/forms": "13.3.11",
+    "@angular/platform-browser": "13.3.11",
+    "@angular/platform-browser-dynamic": "13.3.11",
+    "@angular/router": "13.3.11",
+    "bootstrap": "4.6.2",
+    "chart.js": "3.9.1",
+    "ngx-bootstrap": "6.2.0",
+    "primeicons": "5.0.0",
+    "primeng": "13.0.0-rc.2",
+    "rxjs": "7.5.5",
+    "tslib": "2.3.1",
+    "zone.js": "0.11.5"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "13.3.9",
+    "@angular/cli": "13.3.9",
+    "@angular/compiler-cli": "13.3.11",
+    "@types/jasmine": "3.10.18",
+    "jasmine-core": "4.0.1",
+    "karma": "6.3.20",
+    "karma-chrome-launcher": "3.1.1",
+    "karma-coverage": "2.2.0",
+    "karma-jasmine": "4.0.2",
+    "karma-jasmine-html-reporter": "1.7.0",
+    "typescript": "4.6.4"
+  }
+}

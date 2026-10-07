@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+.vs/
+.idea/
+*.user
+
+.angular/

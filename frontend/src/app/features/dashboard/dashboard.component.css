@@ -1,0 +1,2 @@
+.grafico { position: relative; height: 300px; }
+:host ::ng-deep .p-datatable .p-sortable-column { white-space: nowrap; }

@@ -1,0 +1,144 @@
+<main class="container py-4">
+  <app-page-header
+    title="Relatório de Vendas"
+    subtitle="Importe um CSV de vendas e acompanhe os totais por produto."
+  ></app-page-header>
+
+  <section class="card card-body mb-3" aria-label="Importação do arquivo CSV">
+    <app-upload (csvLoaded)="aoCarregarCsv($event)" (readError)="avisar('danger', $event)"></app-upload>
+  </section>
+
+  <div aria-live="polite">
+    <alert *ngFor="let a of alertas" [type]="a.tipo" [dismissible]="true" (onClosed)="fecharAlerta(a)">
+      {{ a.mensagem }}
+    </alert>
+  </div>
+
+  <ng-container *ngIf="agregados.length > 0; else semDados">
+    <section class="card card-body mb-3" aria-label="Filtro por produto">
+      <label for="filtro-produto" class="font-weight-bold">Filtrar por produto</label>
+      <input
+        id="filtro-produto"
+        type="text"
+        pInputText
+        class="w-100"
+        autocomplete="off"
+        placeholder="Digite o nome do produto"
+        aria-label="Filtrar por nome de produto"
+        [(ngModel)]="filtro"
+        (ngModelChange)="aplicarFiltro()"
+      />
+    </section>
+
+    <section class="card card-body mb-3" aria-label="Gráfico de quantidade por produto">
+      <h2 class="h5">Quantidade por produto</h2>
+      <div class="grafico" role="img" aria-label="Gráfico de barras com a quantidade vendida de cada produto">
+        <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="300px"></p-chart>
+      </div>
+    </section>
+
+    <section class="card card-body mb-3" aria-label="Tabela de vendas por produto">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h5 mb-0">Vendas por produto</h2>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-download"
+          label="Exportar CSV"
+          aria-label="Exportar vendas agregadas para CSV"
+          (click)="exportarCsv()"
+        ></button>
+      </div>
+
+      <p-table
+        [value]="filtrados"
+        [paginator]="true"
+        [rows]="5"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        responsiveLayout="scroll"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="produto">Produto <p-sortIcon field="produto"></p-sortIcon></th>
+            <th pSortableColumn="quantidadeTotal">Quantidade <p-sortIcon field="quantidadeTotal"></p-sortIcon></th>
+            <th pSortableColumn="valorTotal">Valor Total <p-sortIcon field="valorTotal"></p-sortIcon></th>
+            <th pSortableColumn="dataVenda">Data da Venda <p-sortIcon field="dataVenda"></p-sortIcon></th>
+            <th><span class="sr-only">Ações</span></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-p>
+          <tr>
+            <td>{{ p.produto }}</td>
+            <td>{{ p.quantidadeTotal }}</td>
+            <td>{{ p.valorTotal | currencyBr }}</td>
+            <td>{{ p.dataVenda | date: 'dd/MM/yyyy' }}</td>
+            <td>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary"
+                [attr.aria-label]="'Ver detalhes de ' + p.produto"
+                (click)="abrirDetalhes(p)"
+              >
+                Detalhes
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr><td colspan="5">Nenhum produto encontrado para o filtro informado.</td></tr>
+        </ng-template>
+      </p-table>
+    </section>
+  </ng-container>
+
+  <ng-template #semDados>
+    <p class="text-muted">Nenhuma venda carregada. Selecione um arquivo CSV para começar.</p>
+  </ng-template>
+</main>
+
+<ng-template #detalhesModal>
+  <div class="modal-header">
+    <h2 id="titulo-detalhes" class="modal-title h5">Detalhes: {{ selecionado?.produto }}</h2>
+    <button type="button" class="close" aria-label="Fechar detalhes" (click)="modalRef?.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="selecionado as s">
+    <dl class="row mb-3">
+      <dt class="col-sm-4">Quantidade total</dt>
+      <dd class="col-sm-8">{{ s.quantidadeTotal }}</dd>
+      <dt class="col-sm-4">Valor total</dt>
+      <dd class="col-sm-8">{{ s.valorTotal | currencyBr }}</dd>
+      <dt class="col-sm-4">Última venda</dt>
+      <dd class="col-sm-8">{{ s.dataVenda | date: 'dd/MM/yyyy' }}</dd>
+    </dl>
+
+    <h3 class="h6">Vendas do produto</h3>
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <caption class="sr-only">Vendas individuais de {{ s.produto }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Quantidade</th>
+            <th scope="col">Preço unitário</th>
+            <th scope="col">Subtotal</th>
+            <th scope="col">Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of s.vendas">
+            <td>{{ v.id_venda }}</td>
+            <td>{{ v.quantidade }}</td>
+            <td>{{ v.preco_unitario | currencyBr }}</td>
+            <td>{{ v.quantidade * v.preco_unitario | currencyBr }}</td>
+            <td>{{ v.data_venda | date: 'dd/MM/yyyy' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modalRef?.hide()">Fechar</button>
+  </div>
+</ng-template>
